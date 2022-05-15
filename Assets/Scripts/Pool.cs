@@ -5,95 +5,59 @@ using DG.Tweening;
 using TMPro;
 public class Pool : MonoBehaviour
 {
-    [SerializeField] private int poolValue;
-    private int totalBallCount;
-    [SerializeField] TextMeshPro gateTextNesh;
-    private List<GameObject> balls = new List<GameObject>();
 
-    [SerializeField] private Color groundColor;
+    [SerializeField] private TextMeshPro countText;
+    [SerializeField] private int neededBallCount;
+    [SerializeField] private Collider gate;
 
-    [SerializeField] private Collider parentCollider;
+    private int currentBallCount;
+
+    
+
+    private Material mat;
 
     public void Start()
     {
-        SetUpdateText();
+        UpdateText();
     }
-
-    private void SetUpdateText()
+    private void Passed()
     {
-        gateTextNesh.SetText(totalBallCount + " / " + poolValue);
+        mat = GetComponent<Renderer>().material;
+        mat.DOColor(Color.blue, 2);
 
-    }
+        transform.DOMoveY(0, 2).OnComplete(()=>PlayerController.instance.ContinueMove());
 
-
-    private void PoolCalculater()
-    {
-        if (poolValue <= totalBallCount)
-        {
-            StartCoroutine(PassedPool());
-        }
-
-        SetUpdateText();
-    }
-
-    private IEnumerator PassedPool()
-    {
-        for (int i = 0; i < balls.Count; i++)
-        {
-
-            float randomFloat = UnityEngine.Random.Range(3, 5);
-
-            balls[i].GetComponent<Rigidbody>().AddForce(new Vector3(0, randomFloat, 0), ForceMode.VelocityChange);
-
-        }
-
-        yield return new WaitForSeconds(.5f);
-
-        for (int i = 0; i < balls.Count; i++)
-        {
-            balls[i].GetComponent<Renderer>().material.DOColor(Color.magenta, 0.3f).SetEase(Ease.InFlash);
-        }
-
-        yield return new WaitForSeconds(2f);
-
-        //BURAYA PARTICLE ATILACAK//
-
-        transform.DOLocalMoveZ(-2.9f, 1).SetEase(Ease.Linear).OnComplete(() =>
-        {
-
-            transform.GetComponent<Renderer>().material.DOColor(groundColor, 0.3f).SetEase(Ease.InFlash);
-          
-        });
-
-
-        yield return new WaitForSeconds(1.5f);
-       
-        parentCollider.enabled = false;
-
-        PlayerController.instance.IsMoving = true;
-        
-        PlayerController.instance.PlayerRb.isKinematic = false;
-
+        gate.enabled = false;
         
     }
 
-    private void OnTriggerEnter(Collider other)
+    private bool CanPlayerPass()
     {
-        if (other.CompareTag("Ball") && other.TryGetComponent<Ball>(out var ball))
+        if (currentBallCount >= neededBallCount)
+            return true;
+        else
+            return false;
+    }
+
+    public void OnCollisionEnter(Collision collision)
+    {
+
+        if (collision.transform.CompareTag("Ball"))
         {
-            if (!ball.ballTouched)
+            currentBallCount++;
+
+            UpdateText();
+
+            if (CanPlayerPass())
             {
-                ball.ballTouched = true;
-
-                totalBallCount++;
-
-                balls.Add(ball.gameObject);
-
-                PoolCalculater();
+                Passed();
             }
-
         }
+    }
 
+    public void UpdateText()
+    {
+        countText.text = currentBallCount.ToString() + " / " + neededBallCount.ToString();
     }
 }
 

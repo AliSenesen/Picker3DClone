@@ -126,9 +126,16 @@ public class PlayerController : MonoBehaviour
 
     }
 
+
+     public void ContinueMove()
+    {
+        playerRb.isKinematic = false;
+        _isMoving = true;
+    }
+  
     public void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("gate"))
+        if (other.CompareTag("Gate"))
         {
             onGate = true;
 
