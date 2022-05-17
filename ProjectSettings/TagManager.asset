@@ -8,6 +8,7 @@ TagManager:
   - Pool
   - Ball
   - Gate
+  - LevelEnd
   layers:
   - Default
   - TransparentFX

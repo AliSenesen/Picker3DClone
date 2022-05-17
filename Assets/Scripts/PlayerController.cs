@@ -104,7 +104,7 @@ public class PlayerController : MonoBehaviour
     {
         Ray MyRay = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-        if (Physics.Raycast(MyRay, out hit, 100, layer))
+        if (Physics.Raycast(MyRay, out hit, 200, layer))
         {
             transform.position = Vector3.Lerp(transform.position, new Vector3(hit.point.x, transform.position.y, transform.position.z), _sideLerpSpeed * Time.deltaTime);
         }
@@ -141,7 +141,13 @@ public class PlayerController : MonoBehaviour
 
             StartCoroutine(TouchGate());
 
+
         }
+        if (other.CompareTag("LevelEnd"))
+        {
+            LevelManager.Instance.NextLevel();
+        }
+    
     }
 }
 

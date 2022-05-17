@@ -4,13 +4,18 @@ using UnityEngine;
 
 public class Ball : MonoBehaviour
 {
-    public bool ballTouched = false;
 
 
-
-        
+    public void OnTriggerEnter(Collider other)
+    {
   
+    
+    }
 
-    
-    
+
+
+
+
+
+
 }

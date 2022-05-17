@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -36,18 +37,34 @@ public class GameManager : MonoBehaviour
 
     #endregion
 
-    public Action OnStart;
-    public Action OnWin;
-    public Action OnFail;
-    
+    public bool isGameOver;
+    public GameObject gameOverScreen;
+
     public void Awake()
     {
         instance = this;
+        isGameOver = false;
+       
+
+
     }
 
+    void Update()
+    {
+        if (isGameOver)
+        {
+            gameOverScreen.SetActive(true);
+        }
+        else
+        {
+            gameOverScreen.SetActive(false);
+        }
+    }
 
-
-
+    public void ReplayLevel()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
 
 }
 
